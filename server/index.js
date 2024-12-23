@@ -2,7 +2,8 @@ import express from "express"
 import dotenv from "dotenv"
 import cookieParser from "cookie-parser";
 import connectDB from "./db/connect.js";
-import userRoute from "./routes/user.route.js"
+import userRoute from "./routes/user.route.js";
+import courseRoute from "./routes/course.route.js";
 import cors from "cors";
 
 dotenv.config({});
@@ -21,6 +22,7 @@ app.use(cors({
 
 // routes
 app.use('/api/v1/user', userRoute);
+app.use('api/v1/course', courseRoute);
 
 app.get('/', (req, res) => {
     return res.json({message: "Hello World"});

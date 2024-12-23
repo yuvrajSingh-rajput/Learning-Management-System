@@ -123,6 +123,7 @@ const Login = () => {
                             <div className="space-y-1">
                                 <Label htmlFor="username">Password</Label>
                                 <Input
+                                    type='password'
                                     id="password"
                                     name="password"
                                     value={signupInput.password}
