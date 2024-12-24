@@ -17,12 +17,12 @@ app.use(cookieParser());
 
 app.use(cors({
     origin: "http://localhost:5173",
-    credentials: true
+    credentials: true,
 }));
 
 // routes
 app.use('/api/v1/user', userRoute);
-app.use('api/v1/course', courseRoute);
+app.use('/api/v1/course', courseRoute);
 
 app.get('/', (req, res) => {
     return res.json({message: "Hello World"});
