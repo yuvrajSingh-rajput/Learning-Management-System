@@ -22,13 +22,13 @@ import { Loader2 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import RichTextEditor from "@/components/RichTextEditor";
-import { useEditCourseMutation, useGetCourseByIdQuery } from "@/features/api/courseApi";
+import { useEditCourseMutation, useGetCourseByIdQuery, usePublishCourseMutation } from "@/features/api/courseApi";
 
 const CourseTab = () => {
     const navigate = useNavigate();
     const params = useParams();
     const courseId = params.courseId;
-    
+
     const [input, setInput] = useState({
         courseTitle: '',
         subTitle: '',
@@ -38,12 +38,19 @@ const CourseTab = () => {
         coursePrice: '',
         courseThumbnail: '',
     });
-    const {data: courseByIdData, isLoading: courseByIdIsLoading} = useGetCourseByIdQuery(courseId, {
+
+    const { 
+        data: courseByIdData, 
+        isLoading: courseByIdIsLoading, 
+        refetch 
+    } = useGetCourseByIdQuery(courseId, {
         refetchOnMountOrArgChange: true,
     });
-    
+
+    const [publishCourse, { error: publishError }] = usePublishCourseMutation();
+
     useEffect(() => {
-        if(courseByIdData?.course){
+        if (courseByIdData?.course) {
             const course = courseByIdData?.course;
             setInput({
                 courseTitle: course.courseTitle,
@@ -60,7 +67,7 @@ const CourseTab = () => {
 
     const [previewThumbnail, setPreviewThumbnail] = useState("");
 
-    const [editCourse, {data, isLoading, isError, error, isSuccess}] = useEditCourseMutation();
+    const [editCourse, { data, isLoading, isError, error, isSuccess }] = useEditCourseMutation();
 
     const changeEventHandler = (e) => {
         const { name, value } = e.target;
@@ -77,8 +84,8 @@ const CourseTab = () => {
 
     const selectThumbnail = (e) => {
         const file = e.target.files?.[0];
-        if(file){
-            setInput({...input, courseThumbnail: file});
+        if (file) {
+            setInput({ ...input, courseThumbnail: file });
             const fileReader = new FileReader();
             fileReader.onloadend = () => setPreviewThumbnail(fileReader.result);
             fileReader.readAsDataURL(file);
@@ -95,21 +102,34 @@ const CourseTab = () => {
         formdata.append("courseThumbnail", input.courseThumbnail);
         formdata.append("coursePrice", input.coursePrice);
 
-        await editCourse({formdata, courseId});
+        await editCourse({ formdata, courseId });
     }
 
+    const publishStatusHandler = async (action) => {
+        try {
+            const response = await publishCourse({ courseId, query: action });
+            if (response.data) {
+                refetch();
+                toast.success(response.data.message);
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(publishError?.data?.message || "Failed to publish course");
+        }
+    };
+
     useEffect(() => {
-        if(isSuccess){
+        if (isSuccess) {
             toast.success(data.message || "Course edited successfully");
             navigate("/admin/course");
         }
-        if(isError){
+        if (isError) {
             toast.error(error.data.message || "Error in editing course");
         }
     }, [isSuccess, isError]);
 
-    if(courseByIdIsLoading) return <h1>Loading ...</h1>
-    const isPublished = true;
+    if (courseByIdIsLoading) return <h1>Loading ...</h1>
+
     return (
         <Card>
             <CardHeader className="flex flex-row justify-between">
@@ -120,8 +140,12 @@ const CourseTab = () => {
                     </CardDescription>
                 </div>
                 <div className="space-x-2">
-                    <Button variant="outline">
-                        {isPublished ? "Unpublished" : "Publish"}
+                    <Button
+                        disabled={courseByIdData?.course.lectures.length === 0}
+                        variant="outline"
+                        onClick={() => publishStatusHandler(courseByIdData?.course.isPublished ? "false" : "true")}
+                    >
+                        {courseByIdData?.course.isPublished ? "Unpublish" : "Publish"}
                     </Button>
                     <Button>Remove Course</Button>
                 </div>

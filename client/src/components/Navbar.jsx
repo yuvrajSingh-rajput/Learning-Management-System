@@ -28,16 +28,16 @@ import { toast } from 'sonner';
 import { useSelector } from 'react-redux';
 
 function Navbar() {
-  const {user} = useSelector((store) => store.auth);
+  const { user } = useSelector((store) => store.auth);
   const navigate = useNavigate();
-  const [logoutUser, {data, isLoading, isSuccess}] = useLogoutUserMutation();
+  const [logoutUser, { data, isLoading, isSuccess }] = useLogoutUserMutation();
 
   const logoutUserHandler = async () => {
     await logoutUser();
   }
 
   useEffect(() => {
-    if(isSuccess){
+    if (isSuccess) {
       toast.success(data.message || "user logged out");
       navigate("/login");
       window.location.reload();
@@ -51,9 +51,11 @@ function Navbar() {
         <div className="flex items-center gap-2">
           <School size={"30"} />
           <div>
-            <h1 className="hidden md:block font-extrabold text-2xl">
-              E-Learning
-            </h1>
+            <Link to='/'>
+              <h1 className="hidden md:block font-extrabold text-2xl">
+                E-Learning
+              </h1>
+            </Link>
           </div>
         </div>
         {/* User icons and dark mode icon  */}
@@ -94,7 +96,7 @@ function Navbar() {
             </DropdownMenu>
           ) : (
             <div className="flex items-center gap-2">
-              <Button 
+              <Button
                 variant="outline" onClick={() => navigate("/login")}>Login</Button>
               <Button onClick={() => navigate("/signup")} >Signup</Button>
             </div>
