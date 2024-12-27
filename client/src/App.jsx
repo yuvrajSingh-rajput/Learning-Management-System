@@ -5,6 +5,7 @@ import MainLayout from "./layout/MainLayout";
 import Courses from "./pages/student/Courses";
 import MyLearning from "./pages/student/MyLearning";
 import Profile from "./pages/student/Profile";
+import CourseDetail from "./pages/student/CourseDetail";
 import Sidebar from "./pages/admin/Sidebar";
 import Dashboard from "./pages/admin/Dashboard";
 import CourseTable from "./pages/admin/course/CourseTable";
@@ -12,6 +13,7 @@ import AddCourse from "./pages/admin/course/AddCourse";
 import EditCourse from "./pages/admin/course/EditCourse";
 import CreateLecture from "./pages/admin/lecture/CreateLecture";
 import EditLecture from "./pages/admin/lecture/EditLecture";
+import CourseProgress from "./pages/student/CourseProgress";
 
 const appRouter = createBrowserRouter([
   {
@@ -38,6 +40,14 @@ const appRouter = createBrowserRouter([
       {
         path:"profile",
         element: <Profile />
+      },
+      {
+        path: "course-detail/:courseId",
+        element: <CourseDetail />
+      },
+      {
+        path: "course-progress/:courseId",
+        element: <CourseProgress />
       },
       {
         path: "admin",
@@ -81,4 +91,4 @@ function App() {
   )
 }
 
-export default App
+export default App;

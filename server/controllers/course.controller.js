@@ -23,10 +23,34 @@ export const createCourse = async (req, res) => {
         });
         
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({
             success: false, 
             message: "Failed to create course",
+        });
+    }
+};
+
+export const getPublishedCourse = async (req, res) => {
+    try {
+        const courses = await Course.find({isPublished: true}).populate({path: "creator", select: "name imageUrl"});
+        if(!courses){
+            res.status(404).json({
+                success: false,
+                message: "no courses found",
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            courses,
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false, 
+            message: "Failed to get published courses",
         });
     }
 };
