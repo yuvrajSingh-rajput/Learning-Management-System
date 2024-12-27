@@ -6,6 +6,7 @@ import userRoute from "./routes/user.route.js";
 import courseRoute from "./routes/course.route.js";
 import mediaRoute from "./routes/media.route.js";
 import purchaseRoute from "./routes/purchase.route.js";
+import courseProgressRoute from "./routes/course-progress.route.js";
 import cors from "cors";
 
 dotenv.config({});
@@ -27,6 +28,7 @@ app.use('/api/v1/media', mediaRoute);
 app.use('/api/v1/user', userRoute);
 app.use('/api/v1/course', courseRoute);
 app.use('/api/v1/purchase', purchaseRoute);
+app.use('/api/v1/progress', courseProgressRoute);
 
 app.get('/', (req, res) => {
     return res.json({message: "Hello World"});
