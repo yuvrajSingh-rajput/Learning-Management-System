@@ -34,7 +34,7 @@ function Navbar() {
 
   const logoutUserHandler = async () => {
     await logoutUser();
-  }
+  };
 
   useEffect(() => {
     if (isSuccess) {
@@ -42,7 +42,7 @@ function Navbar() {
       navigate("/login");
       window.location.reload();
     }
-  }, [isSuccess])
+  }, [isSuccess]);
 
   return (
     <div className="h-16 dark:bg-[#020817] bg-white border-b dark:border-b-gray-800 border-b-gray-200 fixed top-0 left-0 right-0 duration-300 z-10">
@@ -107,14 +107,28 @@ function Navbar() {
       {/* Mobile device  */}
       <div className="flex md:hidden items-center justify-between px-4 h-full">
         <h1 className="font-extrabold text-2xl">E-learning</h1>
-        <MobileNavbar />
+        <MobileNavbar user={user} />
       </div>
     </div>
   );
 }
 
-const MobileNavbar = () => {
-  const role = "instructor";
+const MobileNavbar = ({user}) => {
+  const navigate = useNavigate();
+  const [logoutUser, { data, isLoading, isSuccess }] = useLogoutUserMutation();
+
+  const logoutUserHandler = async () => {
+    await logoutUser();
+  }
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(data.message || "user logged out");
+      navigate("/login");
+      window.location.reload();
+    }
+  }, [isSuccess]);
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -135,12 +149,12 @@ const MobileNavbar = () => {
         <nav className="flex flex-col space-y-4">
           <Link to="/my-learning">My Learning</Link>
           <Link to="/profile">Edit Profile</Link>
-          <p>Log out</p>
+          <p onClick={logoutUserHandler}>Log out</p>
         </nav>
-        {role === "instructor" && (
+        {user?.role === "instructor" && (
           <SheetFooter>
             <SheetClose asChild>
-              <Button type="submit">Dashboard</Button>
+              <Button type="submit" onClick={() => navigate(`/admin/dashboard`)}>Dashboard</Button>
             </SheetClose>
           </SheetFooter>
         )}
