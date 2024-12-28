@@ -21,7 +21,7 @@ import {
     useRemoveLectureMutation 
 } from "@/features/api/courseApi";
 
-const MEDIA_API = "http://localhost:3000/api/v1/media";
+const MEDIA_API = "https://learning-management-system-2-rt4f.onrender.com/api/v1/media";
 
 const LectureTab = () => {
     const [lectureTitle, setLectureTitle] = useState("");
