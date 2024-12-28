@@ -156,7 +156,7 @@ const Profile = () => {
                         <h1>You haven't enrolled yet in any course</h1>
                     ) : (
                         user.enrolledCourses.map((course) => (
-                            <Course key={course._id} />
+                            <Course  course={course} key={course._id}/>
                         ))
                     )}
                 </div>
