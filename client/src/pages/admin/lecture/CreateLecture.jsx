@@ -36,6 +36,7 @@ const CreateLecture = () => {
         if (isSuccess) {
             refetch();
             toast.error(data.message || "lecture successfully created");
+            setLectureTitle("");
         }
         if (isError) {
             toast.error(error.data.message || "error in creating lecture");

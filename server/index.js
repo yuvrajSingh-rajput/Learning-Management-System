@@ -39,3 +39,4 @@ app.listen(PORT, () => {
 });
 
 
+// stripe listen --forward-to http://localhost:3000/api/v1/purchase/webhook
