@@ -1,8 +1,76 @@
-import React from 'react'
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { useGetPurchasedCoursesQuery } from '@/features/api/purchaseApi';
 
 const Dashboard = () => {
+  const { data, isSuccess, isLoading, isError } = useGetPurchasedCoursesQuery();
+
+  if (isLoading) return <h1>Loading...</h1>
+  if (isError) return <h1 className='text-red-500'>Failed to get purchased courses</h1>
+
+  const { purchasedCourse } = data || [];
+  const courseData = purchasedCourse.map((course) => ({
+    name: course.courseId.courseTitle,
+    price: course.courseId.coursePrice,
+  }));
+
+  const totalRevenue = purchasedCourse.reduce((acc, element) => acc + (element.amount || 0) , 0);
+
+  const totalSales = purchasedCourse.length;
+
   return (
-    <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Adipisci minus sint eum! Saepe quam, sunt ullam quia facere labore id, iure tempore quidem a earum eius vitae asperiores itaque, harum quas modi officia in minus? Inventore id eaque cupiditate, explicabo dolor incidunt provident perspiciatis, consequatur placeat necessitatibus beatae blanditiis ea suscipit ullam enim aspernatur adipisci illum! Quaerat numquam dolores temporibus illum, architecto recusandae distinctio incidunt animi consectetur pariatur quae est asperiores quia doloremque in. Vitae quaerat ipsum ut rem autem repellat accusamus nam doloribus facere ex exercitationem vero, aut maxime ullam rerum ipsa quo totam reiciendis iusto nobis dolorum ducimus! Vero sapiente repudiandae ut quidem odit eaque fugiat perferendis amet autem laboriosam. Dolores, recusandae tempore? Quo beatae voluptas delectus! Doloribus quasi doloremque facere voluptatem soluta at dolor cum officiis assumenda, blanditiis velit voluptate, sunt nostrum laboriosam mollitia culpa ab. Blanditiis explicabo sapiente, perspiciatis repellat suscipit fugit, nobis, a sunt eligendi repudiandae labore molestias iste iure qui aliquid? Labore fuga quaerat at et ipsam alias asperiores! Cupiditate deserunt facere nesciunt quas itaque! Doloremque numquam unde culpa tempora, libero voluptatibus! Alias iure necessitatibus aliquam veniam distinctio sed, cupiditate, maxime, molestias numquam natus quidem dolores ea nulla ut beatae laboriosam a minus! Recusandae?</div>
+    <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ">
+      <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <CardHeader>
+          <CardTitle>Total Sales</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-3xl font-bold text-blue-600">{totalSales}</p>
+        </CardContent>
+      </Card>
+
+      <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <CardHeader>
+          <CardTitle>Total Revenue</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-3xl font-bold text-blue-600">{totalRevenue}</p>
+        </CardContent>
+      </Card>
+
+      {/* Course Prices Card */}
+      <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4">
+        <CardHeader>
+          <CardTitle className="text-xl font-semibold text-gray-700">
+            Course Prices
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart data={courseData} >
+              <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+              <XAxis
+                dataKey="name"
+                stroke="#6b7280"
+                angle={-30} // Rotated labels for better visibility
+                textAnchor="end"
+                interval={0} // Display all labels
+              />
+              <YAxis stroke="#6b7280" />
+              <Tooltip />
+              <Line
+                type="monotone"
+                dataKey="price"
+                stroke="#4a90e2" // Changed color to a different shade of blue
+                strokeWidth={3}
+                dot={{ stroke: "#4a90e2", strokeWidth: 2 }} // Same color for the dot
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
+    </div>
   )
 }
 
