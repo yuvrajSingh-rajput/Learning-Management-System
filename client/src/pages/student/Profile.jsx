@@ -28,7 +28,6 @@ const Profile = () => {
     useEffect(() => {
         if (data?.user) {
             setName(data.user.name || '');
-            setProfilePhoto(''); 
         }
     }, [data]);
 
@@ -40,7 +39,9 @@ const Profile = () => {
     const updateUserHandler = async () => {
         const formData = new FormData();
         formData.append("name", name);
-        formData.append("profilePhoto", profilePhoto);
+        if (profilePhoto) {
+            formData.append("profilePhoto", profilePhoto);
+        }
         await updateUser(formData);
     };
 
@@ -50,7 +51,7 @@ const Profile = () => {
             toast.success(updateUserData?.message || "Profile updated successfully");
         }
         if (isError) {
-            toast.error(error?.message || "Error in updating profile");
+            toast.error(error?.data?.message || "Error in updating profile");
         }
     }, [isSuccess, isError, updateUserData, error, refetch]);
 
@@ -152,11 +153,11 @@ const Profile = () => {
             <div>
                 <h1 className="font-medium text-lg">Courses you're enrolled in</h1>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 my-5">
-                    {user.enrolledCourses?.length === 0 ? (
+                    {!user.enrolledCourses || user.enrolledCourses.length === 0 ? (
                         <h1>You haven't enrolled yet in any course</h1>
                     ) : (
                         user.enrolledCourses.map((course) => (
-                            <Course  course={course} key={course._id}/>
+                            <Course course={course} key={course._id}/>
                         ))
                     )}
                 </div>
