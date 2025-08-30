@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nodemon server/index.js",
     "build": "npm install && npm install --prefix client && npm run build --prefix client",
+    "stripe": "stripe listen --forward-to http://localhost:3000/api/v1/purchase/webhook",
     "start": "nodemon server/index.js"
   },
   "keywords": [],
